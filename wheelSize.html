@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wheel size</title>
+    <script src = "plotly-latest.min.js"></script>
+</head>
+<style>
+    ul {
+        list-style-type: none;
+        padding: unset;
+    }
+    li {
+        float: left;
+    }
+    li a {
+        display: block;
+        padding: 5px;
+        background-color: lightgrey;
+        color: black;
+        text-decoration: none;
+        font-size: 18px;
+
+    }
+    ul li a.activePage {
+        background-color: lightskyblue;
+    }
+    .button {
+        background-color: lightgrey;
+        border: none;
+        padding: 10px 25px;
+        cursor: pointer;
+        border-radius: 5%;
+    }
+</style>
+<body>
+
+<ul>
+    <li style=""><a href="index.html">Diagrams</a></li>
+<!--    <li><a href="index.html">Wheel torque</a></li>-->
+<!--    <li><a href="index.html">Gear range</a></li>-->
+    <li><a href="wheelSize.html" class="activePage">Wheel Size</a> </li>
+    <li><a href="units.html">Unit conversion</a> </li>
+    <li><a href="about.html">About</a> </li>
+
+</ul>
+<br><br>
+<form id = "wheelSizeForm" method = "get">
+    Old wheel
+    <label for = "oldWidth"></label>
+    Width: <input id = "oldWidth" type = "number" style="width: 50px"/>
+    <label for = "oldHeight"></label>
+    Height: <input id = "oldHeight" type = "number" style="width: 50px"/>
+    <label for = "oldDim"></label>
+    Dim: <input id = "oldDim" type = "number" style="width: 50px"/>
+    <br><br>
+    New wheel:
+    <label for = "newWidth"></label>
+    Width: <input id = "newWidth" type = "number" style="width: 50px"/>
+    <label for = "newHeight"></label>
+    Height: <input id = "newHeight" type = "number" style="width: 50px"/>
+    <label for = "newDim"></label>
+    Dim: <input id = "newDim" type = "number" style="width: 50px"/>
+    <br><br>
+    <button type="button" id="applyOld" class = "button" onclick="wheelSizeFunction()">apply</button>
+    <br><br>
+    <p id = "oldWheelHeight"></p>
+    <p id = "newWheelHeight"></p>
+    <p id = "ratio"></p>
+    <p id = "speedError%"></p>
+    <from method = "get">
+        <button type="button" id = "plotButton" class = "button" onclick = "plot()">Plot</button>
+    </from>
+    <p id = "plot"></p>
+</form>
+<script>
+    var ratio = 0;
+    function wheelSizeFunction() {
+        var oldWidth = document.getElementById("oldWidth").value;
+        var oldHeight = document.getElementById("oldHeight").value;
+        var oldDim = document.getElementById("oldDim").value;
+        var newWidth = document.getElementById("newWidth").value;
+        var newHeight = document.getElementById("newHeight").value;
+        var newDim = document.getElementById("newDim").value;
+        var oldSize = (oldWidth * oldHeight / 50) + (oldDim * 25.4);
+        var newSize = (newWidth * newHeight / 50) + (newDim * 25.4);
+        ratio = (oldSize / newSize);
+        document.getElementById("oldWheelHeight").innerText = "old wheel height = " + oldSize.toFixed(3);
+        document.getElementById("newWheelHeight").innerText = "new wheel height = " + newSize.toFixed(3);
+        document.getElementById("ratio").innerText = "old to new size ratio = " + ratio.toFixed(3);
+        document.getElementById("speedError%").innerText = "Speed error = " + ((ratio - 1) * 100).toFixed(3) + "%";
+    }
+    function plot() {
+        var v = new Array(300);
+        var speedDif = new Array(300);
+        for (let i = 0; i < v.length; i++) {
+            v[i] = i + 1;
+            speedDif[i] = v[i] * ratio;
+            console.log(v[i]);
+        }
+        var data = {
+            x: v, y: speedDif
+        };
+        var layout = {
+            xaxis: { title: "Old speed on speedometer [km/h]" }, yaxis: { title: "New speed on speedometer [km/h]"}
+        }
+        Plotly.newPlot("plot", [data], layout);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    ul {
+        list-style-type: none;
+        padding: unset;
+    }
+    li {
+        float: left;
+    }
+    li a {
+        display: block;
+        padding: 5px;
+        background-color: lightgrey;
+        color: black;
+        text-decoration: none;
+        font-size: 18px;
+
+    }
+    ul li a.activePage {
+        background-color: lightskyblue;
+    }
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Diagrams</title>
+    <script src = "plotly-latest.min.js"></script>
+</head>
+<body>
+
+<ul>
+    <li style=""><a href="index.html" class="activePage">Diagrams</a> </li>
+<!--    <li><a href="index.html">Wheel torque</a> </li>-->
+<!--    <li><a href="index.html">Gear range</a> </li>-->
+    <li><a href="wheelSize.html">Wheel Size</a> </li>
+    <li><a href="units.html">Unit conversion</a> </li>
+    <li><a href="about.html">About</a> </li>
+</ul>
+<br><br>
+<from id = "select">
+    <label for = "selectOptions">
+        <select id = "selectOptions">
+            <option value = "Drag force">Drag force</option>
+            <option value = "Wheel force">Wheel force</option>
+            <option value = "Gear range">Gear range</option>
+        </select>
+        <button id = "add" type="submit" onclick="showHide()">add</button>
+    </label>
+</from>
+<from id = "Drag force" style = "display: none" method = "get">
+    <label for = "cd"></label>
+    Cd: <input id = "cd" type = "number" style="width: 50px"/>
+    A: <label for = "a"></label>
+    <input id = "a" type = "number" style="width: 50px"/>
+    <button type = "submit" onclick="functionA()">Plot</button>
+</from>
+<from id = "gear" style = "display: none" method = "get">
+    <label for = "finalDrive"></label>
+    <p style="display: inline" id = "finaDriveText">Final drive ratio: </p>
+    <input id = "finalDrive" type = "number" style="width: 50px"/>
+    <button id = "addGear" type = "button" onclick="addGear()">add gear</button>
+</from>
+<from id = "Wheel height" style = "display: none">
+    <label for = "width"></label>
+    Width: <input id = "width" type = "number" style="width: 50px"/>
+    <label for = "height"></label>
+    Height: <input id = "height" type = "number" style="width: 50px"/>
+    <label for = "dim"></label>
+    Dim: <input id = "dim" type = "number" style="width: 50px"/>
+    <label for = "weight"></label>
+    Weight: <input id = "weight" type = "number" style="width: 50px"/>
+</from>
+<from id = "Wheel force" style = "display: none" method = "get">
+    <label for = "torque"></label>
+    Torque: <input id = "torque" type = "number" style="width: 50px"/>
+    <button id = "wheelTorqueButton" type = "submit" onclick="wheelTorqueFunction()">Plot</button>
+</from>
+<from id = "Gear range" style = "display: none" method = "get">
+    <label for = "redline"></label>
+    Redline: <input id = "redline" type = "number" style="width: 70px"/>
+    <button id = "revButton" type = "submit" onclick="rev()">Plot</button>
+</from>
+<p id = "dragPlot"></p>
+<p id = "wheelTorquePlot"></p>
+<p id = "maxRevPlot"></p>
+<script>
+    function functionA() {
+        var cd = document.getElementById("cd").value;
+        var a = document.getElementById("a").value;
+        var p = 0.6;
+        var v = new Array(300);
+        var drag = new Array(300);
+        for (var i = 0; i < 300; i++) {
+            v[i] = i + 1;
+            drag[i] = (p * cd * a * i * i * 1000000) / (3600 * 3600);
+        }
+        var data = {
+            x: v, y: drag, mode: "lines"
+        };
+        var data1 = [data];
+        var layout = {
+            title: "Drag force",
+            xaxis: {
+                title: "vehicle speed [km/h]"
+            }, yaxis: {
+                title: "drag force [N]"
+            }
+        }
+        Plotly.newPlot("dragPlot", data1, layout);
+    }
+</script>
+<script>
+    var i = 0;
+    var gearNumber = 0;
+    var finalDrive = 0;
+    var wheelHeight = 0;
+    var weight = 0;
+    var torque = 0;
+    var gears = new Array(12)
+    var redline = 0;
+    function wheelHeightFunction() {
+        wheelHeight = (document.getElementById("width").value * document.getElementById("height").value / 50) + (25.4 * document.getElementById("dim").value);
+        weight = document.getElementById("weight").value
+        torque = document.getElementById("torque").value
+    }
+    function gearRatio() {
+        finalDrive = document.getElementById("finalDrive").value;
+        for (i = 0; i < gearNumber; i++) {
+            var gearId = "gear" + (i + 1);
+            gears[i] = document.getElementById(gearId).value;
+        }
+        i = 0;
+    }
+    function wheelTorqueFunction() {
+        gearRatio();
+        wheelHeightFunction();
+        if (gearNumber !== 0 && wheelHeight !== 0 && torque !== 0) {
+            wheelTorque = new Array(gearNumber);
+            console.log(finalDrive);
+            for (let j = 0; j < wheelTorque.length; j++) {
+                wheelTorque[j] = torque * finalDrive * gears[j] / (wheelHeight / 1000);
+                console.log(wheelTorque[j]);
+            }
+            var x = new Array(gearNumber);
+            for (let j = 0; j < x.length; j++) {
+                x[j] = j + 1;
+            }
+            var data = {
+                x: x, y: wheelTorque, mode: "scatter"
+            };
+            var data1 = [data];
+            var layout = {
+                title: "Wheel torque",
+                xaxis: {
+                    title: "Number of gear"
+                }, yaxis: {
+                    title: "Maximum wheel torque [N]"
+                }
+            }
+            Plotly.newPlot("wheelTorquePlot", data1, layout);
+        }
+    }
+    function rev() {
+        gearRatio();
+        wheelHeightFunction();
+        redline = document.getElementById("redline").value;
+        var maxSpeedOnGear = new Array(gearNumber);
+        var noGear = new Array(gearNumber);
+        console.log(maxSpeedOnGear.length);
+        console.log(noGear.length);
+        for (let j = 0; j < maxSpeedOnGear.length; j++) {
+            maxSpeedOnGear[j] = (wheelHeight * 3.14 * 60 / 1000000) * redline / (finalDrive * gears[j]);
+            console.log(j);
+            noGear[j] = j + 1;
+        }
+
+        var data = {
+            x: noGear, y: maxSpeedOnGear
+        };
+
+        var data1 = [data];
+        var layout = {
+            title: "Gears range",
+            xaxis: {
+                title: "Number of gear"
+            }, yaxis: {
+                title: "Speed [km/h]"
+            }
+        }
+        Plotly.newPlot("maxRevPlot", data1, layout);
+    }
+    function addGear() {
+        gearNumber++;
+        var addGear = document.createElement("input");
+        var addText = document.createElement("p");
+        addGear.type = "numeric";
+        addGear.style = "width: 50px";
+        addGear.id = "gear" + gearNumber;
+        addText.innerText = " " + gearNumber + " gear ratio:";
+        addText.style = "display: inline";
+        document.getElementById("gear").appendChild(addText);
+        document.getElementById("gear").appendChild(addGear);
+    }
+</script>
+<script>
+    function showHide() {
+        var element = document.getElementById("selectOptions").value;
+        if (document.getElementById(element).style.display === "none") {
+            if (element !== "Drag force") {
+                document.getElementById("gear").style.display = "inline";
+                document.getElementById("Wheel height").style.display = "inline";
+            }
+            document.getElementById(element).style.display = "inline";
+        } else {
+            document.getElementById(element).style.display = "none";
+        }
+        if (document.getElementById("Wheel force").style.display === "none" && document.getElementById("Gear range").style.display === "none") {
+            document.getElementById("gear").style.display = "none";
+            document.getElementById("Wheel height").style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>
