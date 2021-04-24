@@ -29,8 +29,6 @@
 
 <ul>
     <li style=""><a href="index.html">Diagrams</a></li>
-    <!--    <li><a href="index.html">Wheel torque</a></li>-->
-    <!--    <li><a href="index.html">Gear range</a></li>-->
     <li><a href="wheelSize.html">Wheel Size</a> </li>
     <li><a href="units.html" class="activePage">Unit conversion</a> </li>
     <li><a href="about.html">About</a> </li>
@@ -47,6 +45,7 @@
         <option value="torque">torque</option>
         <option value="length">length</option>
         <option value="weight">weight</option>
+        <option value="consumption">fuel consumption</option>
     </select>
     <p id = "value">Value</p>
     <label for = "inputValue"></label>
@@ -67,10 +66,11 @@
     var oldElement = document.getElementById("oldUnit");
     var newElement = document.getElementById("newUnit");
     var type = document.getElementById("type");
-    var powerList = ["", "kW", "hp"];
+    var powerList = ["", "kW", "hp", "PS"];
     var torqueList = ["", "Nm", "lbf"];
     var lengthList = ["", "km", "m", "ft", "mile"];
     var weightList = ["", "kg", "g", "lb"];
+    var fuelList = ["", "l/100km", "km/l", "mpg (US gallons)", "mpg (UK gallons)"]
     var oldUnit = "";
     var newUnit = "";
 
@@ -88,8 +88,9 @@
             oldUnit = lengthList[document.getElementById("oldUnit").selectedIndex];
         } else if (type.selectedIndex === 4) {
             oldUnit = weightList[document.getElementById("oldUnit").selectedIndex];
+        } else if (type.selectedIndex === 5) {
+            oldUnit = fuelList[document.getElementById("oldUnit").selectedIndex];
         }
-        console.log(oldUnit);
     }
     function newUnitUpdate() {
         var currentNewUnit = oldElement.selectedIndex;
@@ -101,8 +102,9 @@
             newUnit = lengthList[document.getElementById("newUnit").selectedIndex];
         } else if (type.selectedIndex === 4) {
             newUnit = weightList[document.getElementById("newUnit").selectedIndex];
+        } else if (type.selectedIndex === 5) {
+            newUnit = fuelList[document.getElementById("newUnit").selectedIndex];
         }
-        console.log(newUnit);
     }
     function listUpdate() {
         var currentType = type.selectedIndex;
@@ -166,6 +168,21 @@
                 newSelect.innerHTML = weightList[i];
                 newElement.appendChild(newSelect);
             }
+        } else if (currentType === 5) {
+            oldElement.innerHTML = "";
+            newElement.innerHTML = "";
+            for (var i = 0; i < fuelList.length; i++) {
+                var newSelect = document.createElement("option");
+                newSelect.value = fuelList[i];
+                newSelect.innerHTML = fuelList[i];
+                oldElement.appendChild(newSelect);
+            }
+            for (var i = 0; i < fuelList.length; i++) {
+                var newSelect = document.createElement("option");
+                newSelect.value = fuelList[i];
+                newSelect.innerHTML = fuelList[i];
+                newElement.appendChild(newSelect);
+            }
         }
     }
     function calc() {
@@ -175,12 +192,21 @@
         var result = document.getElementById("result");
         if (oldUnit === "hp") {
             if (newUnit === "kW") {
-                console.log(inputValue);
-                result.innerText = "Result: " + (inputValue / 1.36);
+                result.innerText = "Result: " + (inputValue / 1.34102209);
+            } else if (newUnit === "PS") {
+                result.innerText = "Result: " + (inputValue / 1.35962162);
             }
         } else if (oldUnit === "kW") {
             if (newUnit === "hp") {
-                result.innerText = "Result: " + (inputValue * 1.36);
+                result.innerText = "Result: " + (inputValue * 0.74569987);
+            } else if (newUnit === "PS") {
+                result.innerText = "Result: " + (inputValue * 0.73549875);
+            }
+        } else if (oldUnit === "PS") {
+            if (newUnit === "hp") {
+                result.innerText = "Result: " + (inputValue * 0.73549875);
+            } else if (newUnit === "kW") {
+                result.innerText = "Result: " + (inputValue * 0.73549875);
             }
         } else if (oldUnit === "Nm") {
             if (newUnit === "lbf") {
@@ -239,6 +265,38 @@
                 result.innerText = "Result: " + (inputValue / 0.0003048);
             } else if (newUnit === "m") {
                 result.innerText = "Result: " + (inputValue / 0.3048);
+            }
+        } else if (oldUnit === "l/100km") {
+            if (newUnit === "mpg (US gallons)") {
+                result.innerText = "Result: " + ((100 / 1.609344) / (inputValue / 3.7854118));
+            } else if (newUnit === "mpg (UK gallons)") {
+                result.innerText = "Result: " + ((100 / 1.609344) / (inputValue / 4.5460919));
+            } else if (newUnit === "km/l") {
+                result.innerText = "Result: " + (100 / inputValue);
+            }
+        } else if (oldUnit === "mpg (US gallons)") {
+            if (newUnit === "mpg (UK gallons)") {
+                result.innerText = "Result: " + (inputValue * 1.2009504);
+            } else if (newUnit === "l/100km") {
+                result.innerText = "Result: " + (100 / (inputValue * 1.609344 / 3.7854118));
+            } else if (newUnit === "km/l") {
+                result.innerText = "Result: " + (inputValue * 1.609344 / 3.7854118);
+            }
+        } else if (oldUnit === "mpg (UK gallons)") {
+            if (newUnit === "mpg (US gallons)") {
+                result.innerText = "Result: " + (inputValue / 1.2009504);
+            } else if (newUnit === "l/100km") {
+                result.innerText = "Result: " + (100 / (inputValue * 1.609344 / 4.5460919));
+            } else if (newUnit === "km/l") {
+                result.innerText = "Result: " + (inputValue * 1.609344 / 4.5460919);
+            }
+        } else if (oldUnit === "km/l") {
+            if (newUnit === "mpg (US gallons)") {
+                result.innerText = "Result: " + (inputValue / 1.609344 * 3.7854118);
+            } else if (newUnit === "mpg (UK gallons)") {
+                result.innerText = "Result: " + (inputValue / 1.609344 * 4.5460919);
+            } else if (newUnit === "l/100km") {
+                result.innerText = "Result: " + (100 / inputValue);
             }
         }
     }
