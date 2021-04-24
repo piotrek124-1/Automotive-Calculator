@@ -58,7 +58,7 @@
     <label for = "newUnit"></label>
     <select id = "newUnit">
     </select>
-    <button type="button" id = "calcButton" onclick="calc()">Calc</button>
+    <button type="button" id = "calcButton" onclick="calc()">Calculate</button>
 </form>
 <p id = "result"></p>
 <script>
@@ -194,7 +194,7 @@
             if (newUnit === "kW") {
                 result.innerText = "Result: " + (inputValue / 1.34102209);
             } else if (newUnit === "PS") {
-                result.innerText = "Result: " + (inputValue / 1.35962162);
+                result.innerText = "Result: " + (inputValue / 1.013869663);
             }
         } else if (oldUnit === "kW") {
             if (newUnit === "hp") {
@@ -204,9 +204,9 @@
             }
         } else if (oldUnit === "PS") {
             if (newUnit === "hp") {
-                result.innerText = "Result: " + (inputValue * 0.73549875);
+                result.innerText = "Result: " + (inputValue * 1.013869663);
             } else if (newUnit === "kW") {
-                result.innerText = "Result: " + (inputValue * 0.73549875);
+                result.innerText = "Result: " + (inputValue / 1.341022092);
             }
         } else if (oldUnit === "Nm") {
             if (newUnit === "lbf") {
