@@ -11,14 +11,24 @@
     li a {
         display: block;
         padding: 5px;
-        background-color: lightgrey;
         color: black;
         text-decoration: none;
         font-size: 18px;
-
     }
-    ul li a.activePage {
+    ul li a.activeBar {
         background-color: lightskyblue;
+    }
+    ul li a.bar {
+        background-color: lightgrey;
+        opacity: 1;
+        transition: background-color .5s;
+    }
+    a.bar:hover {
+        background-color: lightskyblue;
+    }
+    select {
+        background-color: white;
+        font-size: 15px;
     }
 
 </style>
@@ -28,20 +38,19 @@
     <script src = "plotly-latest.min.js"></script>
 </head>
 <body>
-
 <ul>
-    <li style=""><a href="index.html" class="activePage">Diagrams</a> </li>
-    <li><a href="wheelSize.html">Wheel Size</a> </li>
-    <li><a href="units.html">Unit conversion</a> </li>
-    <li><a href="about.html">About</a> </li>
+    <li style=""><a href="index.html" class="activeBar">Drag Force/Wheel Force/Gear ranges</a> </li>
+    <li><a href="wheelSize.html" class="bar">Wheel Size</a> </li>
+    <li><a href="units.html" class="bar">Unit conversion</a> </li>
+    <li><a href="about.html" class="bar">About</a> </li>
 </ul>
 <br><br>
 <from id = "select">
     <label for = "selectOptions">
-        <select id = "selectOptions">
-            <option value = "Drag force">Drag force</option>
-            <option value = "Wheel force">Wheel force</option>
-            <option value = "Gear range">Gear range</option>
+        <select id = "selectOptions" class="select">
+            <option value = "Drag force" class="option">Drag force</option>
+            <option value = "Wheel force" class="option">Wheel force</option>
+            <option value = "Gear range" class="option">Gear range</option>
         </select>
         <button id = "add" type="submit" onclick="showHide()">add</button>
     </label>

@@ -15,23 +15,41 @@
     li a {
         display: block;
         padding: 5px;
-        background-color: lightgrey;
         color: black;
         text-decoration: none;
         font-size: 18px;
-
     }
-    ul li a.activePage {
+    ul li a.activeBar {
         background-color: lightskyblue;
+    }
+    ul li a.bar {
+        background-color: lightgrey;
+        opacity: 1;
+        transition: background-color .5s;
+    }
+    a.bar:hover {
+        background-color: lightskyblue;
+    }
+    .button {
+        background-color: lightgrey;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+        border-radius: 5%;
+        transition: .5s;
+        font-size: 15px;
+    }
+    .button:hover {
+        opacity: 0.85;
     }
 </style>
 <body>
 
 <ul>
-    <li style=""><a href="index.html">Diagrams</a></li>
-    <li><a href="wheelSize.html">Wheel Size</a> </li>
-    <li><a href="units.html" class="activePage">Unit conversion</a> </li>
-    <li><a href="about.html">About</a> </li>
+    <li style=""><a href="index.html" class="bar">Drag Force/Wheel Force/Gear ranges</a></li>
+    <li><a href="wheelSize.html" class="bar">Wheel Size</a> </li>
+    <li><a href="units.html" class="activeBar">Unit conversion</a> </li>
+    <li><a href="about.html" class="bar">About</a> </li>
 
 </ul>
 <br><br>
@@ -58,7 +76,7 @@
     <label for = "newUnit"></label>
     <select id = "newUnit">
     </select>
-    <button type="button" id = "calcButton" onclick="calc()">Calculate</button>
+    <button type="button" id = "calcButton" class="button" onclick="calc()">Calculate</button>
 </form>
 <p id = "result"></p>
 <script>
@@ -67,7 +85,7 @@
     var newElement = document.getElementById("newUnit");
     var type = document.getElementById("type");
     var powerList = ["", "kW", "hp", "PS"];
-    var torqueList = ["", "Nm", "lbf"];
+    var torqueList = ["", "Nm", "lbf-ft"];
     var lengthList = ["", "km", "m", "ft", "mile"];
     var weightList = ["", "kg", "g", "lb"];
     var fuelList = ["", "l/100km", "km/l", "mpg (US gallons)", "mpg (UK gallons)"]
@@ -198,9 +216,9 @@
             }
         } else if (oldUnit === "kW") {
             if (newUnit === "hp") {
-                result.innerText = "Result: " + (inputValue * 0.74569987);
+                result.innerText = "Result: " + (inputValue / 0.74569987);
             } else if (newUnit === "PS") {
-                result.innerText = "Result: " + (inputValue * 0.73549875);
+                result.innerText = "Result: " + (inputValue / 0.73549875);
             }
         } else if (oldUnit === "PS") {
             if (newUnit === "hp") {
@@ -209,30 +227,30 @@
                 result.innerText = "Result: " + (inputValue / 1.341022092);
             }
         } else if (oldUnit === "Nm") {
-            if (newUnit === "lbf") {
-                result.innerText = "Result: " + (inputValue / (0.453592 * 30.48));
+            if (newUnit === "lbf-ft") {
+                result.innerText = "Result: " + (inputValue / 1.355816842);
             }
-        } else if (oldUnit === "lbf") {
+        } else if (oldUnit === "lbf-ft") {
             if (newUnit === "Nm") {
-                result.innerText = "Result: " + (inputValue * 0.453592 * 3.048);
+                result.innerText = "Result: " + (inputValue * 1.355816842);
             }
         } else if (oldUnit === "g") {
             if (newUnit === "lb") {
-                result.innerText = "Result: " + (inputValue / 0.453592);
+                result.innerText = "Result: " + (inputValue / 453.59237);
             } else if (newUnit === "kg") {
                 result.innerText = "Result: " + (inputValue / 1000);
             }
         } else if (oldUnit === "lb") {
             if (newUnit === "g") {
-                result.innerText = "Result: " + (inputValue * 0.453592);
+                result.innerText = "Result: " + (inputValue * 453.59237);
             } else if (newUnit === "kg") {
-                result.innerText = "Result: " + (inputValue * 0.000453592);
+                result.innerText = "Result: " + (inputValue * 0.45359237);
             }
         } else if (oldUnit === "kg") {
             if (newUnit === "g") {
                 result.innerText = "Result: " + (inputValue / 1000);
             } else if (newUnit === "lb") {
-                result.innerText = "Result: " + (inputValue * 0.000453592);
+                result.innerText = "Result: " + (inputValue / 0.45359237);
             }
         } else if (oldUnit === "mile") {
             if (newUnit === "km") {
@@ -248,7 +266,7 @@
             } else if (newUnit === "m") {
                 result.innerText = "Result: " + (inputValue * 1000);
             } else if (newUnit === "ft") {
-                result.innerText = "Result: " + (inputValue * 0.0032808398950131);
+                result.innerText = "Result: " + (inputValue * 3280.8398950131);
             }
         } else if (oldUnit === "m") {
             if (newUnit === "mile") {
@@ -262,9 +280,9 @@
             if (newUnit === "mile") {
                 result.innerText = "Result: " + (inputValue * 0.0001893939393939394);
             } else if (newUnit === "km") {
-                result.innerText = "Result: " + (inputValue / 0.0003048);
+                result.innerText = "Result: " + (inputValue * 0.0003048);
             } else if (newUnit === "m") {
-                result.innerText = "Result: " + (inputValue / 0.3048);
+                result.innerText = "Result: " + (inputValue * 0.3048);
             }
         } else if (oldUnit === "l/100km") {
             if (newUnit === "mpg (US gallons)") {

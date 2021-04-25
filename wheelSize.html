@@ -16,13 +16,19 @@
     li a {
         display: block;
         padding: 5px;
-        background-color: lightgrey;
         color: black;
         text-decoration: none;
         font-size: 18px;
-
     }
-    ul li a.activePage {
+    ul li a.activeBar {
+        background-color: lightskyblue;
+    }
+    ul li a.bar {
+        background-color: lightgrey;
+        opacity: 1;
+        transition: background-color .5s;
+    }
+    a.bar:hover {
         background-color: lightskyblue;
     }
     .button {
@@ -36,10 +42,10 @@
 <body>
 
 <ul>
-    <li style=""><a href="index.html">Diagrams</a></li>
-    <li><a href="wheelSize.html" class="activePage">Wheel Size</a> </li>
-    <li><a href="units.html">Unit conversion</a> </li>
-    <li><a href="about.html">About</a> </li>
+    <li style=""><a href="index.html" class="bar">Drag Force/Wheel Force/Gear ranges</a></li>
+    <li><a href="wheelSize.html" class="activeBar">Wheel Size</a> </li>
+    <li><a href="units.html" class="bar">Unit conversion</a> </li>
+    <li><a href="about.html" class="bar">About</a> </li>
 
 </ul>
 <br><br>
